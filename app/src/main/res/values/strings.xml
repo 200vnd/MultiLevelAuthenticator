@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MultiLevelAuthenticator</string>
+    <string name="text_password">Text Password</string>
+    <string name="test">Test</string>
+    <string name="change">Change</string>
+    <string name="pattern">Pattern</string>
+    <string name="behavior">Behavior</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="password">Password</string>
+</resources>
