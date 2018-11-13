@@ -54,10 +54,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         db = new MyDatabaseHelper(getApplicationContext());
-//        Account tester1 = new Account();
-//        tester1.setId("tester1");
-//        tester1.setPattern("5649646946563");
-//        db.addNewUser(tester1, TYPE_PATTERN);
     }
 
     //---------------------------- start doing Text Password ---------------------------------
@@ -148,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
                 if (txtPassNewTextPass.length() >= 8) {
                     dialogNew.findViewById(R.id.txtWarning8CharGood).setVisibility(View.VISIBLE);
                     dialogNew.findViewById(R.id.txtWarning8CharBad).setVisibility(View.GONE);
+                } else {
+                    dialogNew.findViewById(R.id.txtWarning8CharGood).setVisibility(View.GONE);
+                    dialogNew.findViewById(R.id.txtWarning8CharBad).setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -296,15 +295,17 @@ public class MainActivity extends AppCompatActivity {
                 String reNewTextPass = txtRePassChangeTextPass.getText().toString();
                 String reNewTextPassMD5 = HashMethods.md5(reNewTextPass);
 
-                Log.d("changeTextPass", "id:" + idTextPass);
-                Log.d("changeTextPass", "id in db:" + db.checkID(idTextPass));
-                Log.d("changeTextPass", "old pass:" + oldTextPassMD5);
-                Log.d("changeTextPass", "old pass in db: "+ db.getPassword(idTextPass, TYPE_TEXT));
-                Log.d("changeTextPass", "new pass: "+ newTextPassMD5);
-                Log.d("changeTextPass", "new pass re: "+ reNewTextPassMD5);
+//                Log.d("changeTextPass", "id:" + idTextPass);
+//                Log.d("changeTextPass", "id in db:" + db.checkID(idTextPass));
+//                Log.d("changeTextPass", "old pass:" + oldTextPassMD5);
+//                Log.d("changeTextPass", "old pass in db: "+ db.getPassword(idTextPass, TYPE_TEXT));
+//                Log.d("changeTextPass", "new pass: "+ newTextPassMD5);
+//                Log.d("changeTextPass", "new pass re: "+ reNewTextPassMD5);
 
-                if ((oldTextPassMD5.equals(db.getPassword(idTextPass, TYPE_TEXT))) && newTextPassMD5.equals(reNewTextPassMD5)) {
-                    db.updatePassword(idTextPass,newTextPassMD5,TYPE_TEXT);
+                if (!db.checkID(idTextPass)) {
+                    Toasty.error(getApplicationContext(), "Wrong ID, no user found!", Toast.LENGTH_LONG, true).show();
+                } else if ((oldTextPassMD5.equals(db.getPassword(idTextPass, TYPE_TEXT))) && newTextPassMD5.equals(reNewTextPassMD5)) {
+                    db.updatePassword(idTextPass, newTextPassMD5, TYPE_TEXT);
                     Toasty.success(getApplicationContext(), "Change password successfully!", Toast.LENGTH_LONG, true).show();
                     dialogChange.dismiss();
                 } else if (!(oldTextPassMD5.equals(db.getPassword(idTextPass, TYPE_TEXT)))) {
