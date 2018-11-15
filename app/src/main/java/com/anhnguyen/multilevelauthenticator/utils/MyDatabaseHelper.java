@@ -19,6 +19,10 @@ import java.io.OutputStream;
 
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
+
+    public static final int TYPE_TEXT = 100;
+    public static final int TYPE_PATTERN = 200;
+
     private SQLiteDatabase database;
 
     private static final int DB_VERSION = 1;
@@ -128,36 +132,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-//    private void processShowFavoriteMusic() {
-//        database=openOrCreateDatabase(DATABASE_NAME,
-//                MODE_PRIVATE, null);
-//
-//        data_favorite_music.clear();
-//        Cursor cur=database.query(
-//                "Songs",
-//                null,
-//                "favorite=?",
-//                new String[]{"1"},
-//                null, null, null);
-//        while(cur.moveToNext())
-//        {
-//            String ma=cur.getString(0);
-//            String ten=cur.getString(1);
-//            String casi=cur.getString(3);
-//            int thich=cur.getInt(5);
-//
-//            BaiHat baiHat=new BaiHat();
-//            baiHat.setMa(ma);
-//            baiHat.setTen(ten);
-//            baiHat.setCasi(casi);
-//            baiHat.setThich(thich);
-//
-//            data_favorite_music.add(baiHat);
-//        }
-//        cur.close();
-//        adapter_favorite_music.notifyDataSetChanged();
-//    }
-
     /*
      * add new user and password
      */
@@ -167,14 +141,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         switch (type) {
-            case 100:
+            case TYPE_TEXT:
                 values.put(COLUMN_ID, account.getId());
                 values.put(COLUMN_TEXTPASS, account.getTextPass());
 
                 database.insert(TABLE_AUTHENTICATOR, null, values);
                 database.close();
                 break;
-            case 200:
+            case TYPE_PATTERN:
                 values.put(COLUMN_ID, account.getId());
                 values.put(COLUMN_PATTERN, account.getPattern());
 
@@ -207,10 +181,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
         switch (type) {
-            case 100:
+            case TYPE_TEXT:
                 database.close();
                 return cursor.getString(1);
-            case 200:
+            case TYPE_PATTERN:
                 database.close();
                 return cursor.getString(2);
         }
@@ -224,7 +198,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         switch (type) {
-            case 100:
+            case TYPE_TEXT:
                 values.put(COLUMN_TEXTPASS, pass);
                 database.update(TABLE_AUTHENTICATOR,
                         values,
@@ -232,7 +206,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                         new String[]{String.valueOf(id)});
                 database.close();
                 break;
-            case 200:
+            case TYPE_PATTERN:
                 values.put(COLUMN_PATTERN, pass);
                 database.update(TABLE_AUTHENTICATOR,
                         values,

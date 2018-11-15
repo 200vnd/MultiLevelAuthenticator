@@ -3,6 +3,7 @@ package com.anhnguyen.multilevelauthenticator.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -43,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private MyDatabaseHelper db = null;
     private int flagSuccess = 0;
 
-    private static final int TYPE_TEXT = 100;
-    private static final int TYPE_PATTERN = 200;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,20 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         db = new MyDatabaseHelper(getApplicationContext());
+
+        Account a = new Account();
+        a.setId("i1");
+        a.setPattern("12345");
+        db.addNewUser(a,200);
+        db.updatePassword(a.getId(),HashMethods.md5(a.getPattern()),200);
+        String p;
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            p = null;
+        } else {
+            p = extras.getString("keykey");
+            Toast.makeText(getApplicationContext(), p, Toast.LENGTH_LONG).show();
+        }
     }
 
     //---------------------------- start doing Text Password ---------------------------------
@@ -211,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 String passTextPass = txtPassTestTextPass.getText().toString();
                 String passTextPassMD5 = HashMethods.md5(passTextPass);
 
-                checkTextPassword(idTextPass, passTextPassMD5, TYPE_TEXT);
+                checkTextPassword(idTextPass, passTextPassMD5, MyDatabaseHelper.TYPE_TEXT);
                 if (flagSuccess == 1) {
                     dialogTest.dismiss();
                 }
@@ -231,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
     private void showDialogChangeTextPass() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Change password for existing user or add new user?");
-        builder.setCancelable(false);
+        builder.setCancelable(true);
         builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -242,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 //                dialog.dismiss();
-                registerNewUser(TYPE_TEXT, false);
+                registerNewUser(MyDatabaseHelper.TYPE_TEXT, false);
             }
         });
         AlertDialog alertDialog = builder.create();
@@ -304,11 +318,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!db.checkID(idTextPass)) {
                     Toasty.error(getApplicationContext(), "Wrong ID, no user found!", Toast.LENGTH_LONG, true).show();
-                } else if ((oldTextPassMD5.equals(db.getPassword(idTextPass, TYPE_TEXT))) && newTextPassMD5.equals(reNewTextPassMD5)) {
-                    db.updatePassword(idTextPass, newTextPassMD5, TYPE_TEXT);
+                } else if ((oldTextPassMD5.equals(db.getPassword(idTextPass, MyDatabaseHelper.TYPE_TEXT))) && newTextPassMD5.equals(reNewTextPassMD5)) {
+                    db.updatePassword(idTextPass, newTextPassMD5, MyDatabaseHelper.TYPE_TEXT);
                     Toasty.success(getApplicationContext(), "Change password successfully!", Toast.LENGTH_LONG, true).show();
                     dialogChange.dismiss();
-                } else if (!(oldTextPassMD5.equals(db.getPassword(idTextPass, TYPE_TEXT)))) {
+                } else if (!(oldTextPassMD5.equals(db.getPassword(idTextPass, MyDatabaseHelper.TYPE_TEXT)))) {
                     Toasty.error(getApplicationContext(), "Old password is different", Toast.LENGTH_LONG, true).show();
                 } else {
                     Toasty.error(getApplicationContext(), "Password not matches. Try again!", Toast.LENGTH_LONG, true).show();
@@ -330,11 +344,13 @@ public class MainActivity extends AppCompatActivity {
     private void registerNewUser(int type, boolean userExists) {
 
         switch (type) {
-            case 100:
+            case MyDatabaseHelper.TYPE_TEXT:
                 processNewTextPass(type, userExists);
                 break;
-            case 200:
-
+            case MyDatabaseHelper.TYPE_PATTERN:
+                Intent intent = new Intent(MainActivity.this, PatternActivity.class);
+                intent.putExtra("action", "new");
+                startActivity(intent);
                 break;
         }
     }
@@ -353,10 +369,33 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnTestPattern)
     public void onBtnTestPatternClicked() {
+        Intent intent = new Intent(MainActivity.this, PatternActivity.class);
+        intent.putExtra("action", "test");
+        startActivity(intent);
     }
 
     @OnClick(R.id.btnChangePattern)
     public void onBtnChangePatternClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Change pattern password for existing user or add new user?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, PatternActivity.class);
+                intent.putExtra("action", "change");
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+                registerNewUser(MyDatabaseHelper.TYPE_PATTERN, false);
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @OnClick(R.id.btnTestBehavior)

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/customBackgroundColor"
+    tools:context=".activity.PatternActivity">
+
+    <TextView
+        android:id="@+id/txtIDPattern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="ID"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtIDPatternInput"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtIDPatternInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:textSize="22sp"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@+id/txtPatternNotify"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtIDPattern" />
+
+
+    <TextView
+        android:id="@+id/txtPatternNotify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User not found"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:visibility="invisible"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="@id/pattern_lock_view1"
+        app:layout_constraintRight_toRightOf="@id/pattern_lock_view1"
+        app:layout_constraintTop_toBottomOf="@+id/txtIDPatternInput" />
+
+    <com.andrognito.patternlockview.PatternLockView
+        android:id="@+id/pattern_lock_view1"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@color/customBackgroundColor"
+        app:aspectRatio="height_bias"
+        app:aspectRatioEnabled="true"
+        app:correctStateColor="@color/patternCorrect"
+        app:dotAnimationDuration="150"
+        app:dotCount="3"
+        app:dotNormalSize="@dimen/pattern_lock_dot_size"
+        app:dotSelectedSize="@dimen/pattern_lock_dot_selected_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPatternNotify"
+        app:normalStateColor="@color/patternNormal"
+        app:pathEndAnimationDuration="100"
+        app:pathWidth="@dimen/pattern_lock_path_width"
+        app:wrongStateColor="@color/patternWrong" />
+
+    <com.andrognito.patternlockview.PatternLockView
+        android:visibility="gone"
+        android:id="@+id/pattern_lock_view2"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@color/customBackgroundColor"
+        app:aspectRatio="height_bias"
+        app:aspectRatioEnabled="true"
+        app:correctStateColor="@color/patternCorrect"
+        app:dotAnimationDuration="150"
+        app:dotCount="3"
+        app:dotNormalSize="@dimen/pattern_lock_dot_size"
+        app:dotSelectedSize="@dimen/pattern_lock_dot_selected_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPatternNotify"
+        app:normalStateColor="@color/patternNormal"
+        app:pathEndAnimationDuration="100"
+        app:pathWidth="@dimen/pattern_lock_path_width"
+        app:wrongStateColor="@color/patternWrong" />
+
+    <com.andrognito.patternlockview.PatternLockView
+        android:visibility="gone"
+        android:id="@+id/pattern_lock_view3"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@color/customBackgroundColor"
+        app:aspectRatio="height_bias"
+        app:aspectRatioEnabled="true"
+        app:correctStateColor="@color/patternCorrect"
+        app:dotAnimationDuration="150"
+        app:dotCount="3"
+        app:dotNormalSize="@dimen/pattern_lock_dot_size"
+        app:dotSelectedSize="@dimen/pattern_lock_dot_selected_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPatternNotify"
+        app:normalStateColor="@color/patternNormal"
+        app:pathEndAnimationDuration="100"
+        app:pathWidth="@dimen/pattern_lock_path_width"
+        app:wrongStateColor="@color/patternWrong" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38" />
+</android.support.constraint.ConstraintLayout>
