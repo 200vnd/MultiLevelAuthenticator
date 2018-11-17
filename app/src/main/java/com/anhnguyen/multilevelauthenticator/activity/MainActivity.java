@@ -5,10 +5,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,10 +40,13 @@ public class MainActivity extends AppCompatActivity {
     Button btnTestBehavior;
     @BindView(R.id.btnChangeBehavior)
     Button btnChangeBehavior;
+    @BindView(R.id.btnTestFingerprint)
+    Button btnTestFingerprint;
+    @BindView(R.id.btnChangeFingerprint)
+    Button btnChangeFingerprint;
 
     private MyDatabaseHelper db = null;
     private int flagSuccess = 0;
-
 
 
     @Override
@@ -55,19 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = new MyDatabaseHelper(getApplicationContext());
 
-        Account a = new Account();
-        a.setId("i1");
-        a.setPattern("12345");
-        db.addNewUser(a,200);
-        db.updatePassword(a.getId(),HashMethods.md5(a.getPattern()),200);
-        String p;
-        Bundle extras = getIntent().getExtras();
-        if (extras == null) {
-            p = null;
-        } else {
-            p = extras.getString("keykey");
-            Toast.makeText(getApplicationContext(), p, Toast.LENGTH_LONG).show();
-        }
+
     }
 
     //---------------------------- start doing Text Password ---------------------------------
@@ -407,4 +398,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @OnClick(R.id.btnTestFingerprint)
+    public void onBtnTestFingerprintClicked() {
+        Intent intent = new Intent(MainActivity.this, FingerprintActivity.class);
+//        intent.putExtra("action", "test");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btnChangeFingerprint)
+    public void onBtnChangeFingerprintClicked() {
+        startActivityForResult(new Intent(Settings.ACTION_SECURITY_SETTINGS), 0);
+        Toasty.info(getApplicationContext(), "Change fingerprint setting in phone setting", Toast.LENGTH_LONG, true).show();
+    }
 }
