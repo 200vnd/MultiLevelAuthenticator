@@ -2,26 +2,32 @@ package com.anhnguyen.multilevelauthenticator.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.anhnguyen.multilevelauthenticator.model.Account;
+import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public static final int TYPE_TEXT = 100;
     public static final int TYPE_PATTERN = 200;
+    public static final int TYPE_PICTURE = 300;
 
     private SQLiteDatabase database;
 
@@ -36,6 +42,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TEXTPASS = "textPass";
     private static final String COLUMN_PATTERN = "pattern";
+    private static final String COLUMN_PICTURE = "picture";
 
     private final Context myContext;
 
@@ -99,6 +106,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return myContext.getApplicationInfo().dataDir + DB_PATH_SUFFIX + DB_NAME;
     }
 
+
     private void CopyDataBaseFromAsset() {
         try {
             InputStream myInput;
@@ -155,13 +163,20 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 database.insert(TABLE_AUTHENTICATOR, null, values);
                 database.close();
                 break;
+            case TYPE_PICTURE:
+                values.put(COLUMN_ID, account.getId());
+                values.put(COLUMN_PICTURE, account.getPicture());
+
+                database.insert(TABLE_AUTHENTICATOR, null, values);
+                database.close();
+                break;
         }
 
     }
 
     public boolean checkPasswordExistUser(String id, int type) {
         // user exists, this password type not exists
-        if ((getPassword(id, type) == null) || getPassword(id,type).equals("")) {
+        if ((getPassword(id, type) == null) || getPassword(id, type).equals("")) {
             return false;
         }
         // user and this password type exist
@@ -187,6 +202,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             case TYPE_PATTERN:
                 database.close();
                 return cursor.getString(2);
+            case TYPE_PICTURE:
+                database.close();
+                return cursor.getString(3);
         }
         return null;
     }
@@ -214,6 +232,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                         new String[]{String.valueOf(id)});
                 database.close();
                 break;
+                case TYPE_PICTURE:
+                values.put(COLUMN_PICTURE, pass);
+                database.update(TABLE_AUTHENTICATOR,
+                        values,
+                        COLUMN_ID + "=?",
+                        new String[]{String.valueOf(id)});
+                database.close();
+                break;
         }
     }
 
@@ -235,8 +261,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             Log.d("database", "column 0/1/2: "
                     + String.valueOf(cursor.getString(0)) + "/"
                     + (cursor.getString(1)) + "/"
-                    + (cursor.getString(2))
-            );
+                    + (cursor.getString(2)));
             cursor.close();
             database.close();
             return true;
@@ -248,4 +273,66 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String imageDir_Path() {
+        ContextWrapper cw = new ContextWrapper(myContext);
+        // path to /data/data/my_app/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        return directory.getAbsolutePath();
+    }
+
+    // imageName: "name.jpg"
+    private void saveToInternalStorage(Bitmap bitmapImage, String imageName) {
+//        ContextWrapper cw = new ContextWrapper(myContext);
+//        // path to /data/data/my_app/app_data/imageDir
+//        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(imageDir_Path(), imageName);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            Bitmap bitmapScaled = Bitmap.createScaledBitmap(bitmapImage,
+                    bitmapImage.getWidth() / 2,
+                    bitmapImage.getHeight() / 2,
+                    true);
+            bitmapScaled.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+//        return directory.getAbsolutePath();
+    }
+
+    public boolean saveMultiFileToInternalStorage(ArrayList<MediaFile> listImage, String idUser) {
+        int countSuccess =0;
+        for (int i = 0; i < listImage.size(); i++) {
+            Bitmap bmp = BitmapFactory.decodeFile(listImage.get(i).getPath());
+            String fileName = idUser + "_" + i + ".jpg";
+            saveToInternalStorage(bmp, fileName);
+            if (new File(imageDir_Path() + "//" + fileName).exists()) {
+                countSuccess++;
+            }
+        }
+        return countSuccess == 3;
+    }
+
+    public boolean deleteImageInImageDir(String imageName) {
+        File fileToBeDeleted = new File(imageDir_Path() + "//" + imageName);
+        return fileToBeDeleted.delete();
+    }
+
+    public ArrayList<String> pathsUserPicture(String idUser) {
+        ArrayList<String> arr = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            String path = imageDir_Path() + "//" + idUser + "_" + i + ".jpg";
+            arr.add(path);
+        }
+        return arr;
+    }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -17,7 +18,7 @@ import com.anhnguyen.multilevelauthenticator.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 
-public class MyUtils  {
+public class MyUtils {
 
     public static void ToastCustomSuccess(Activity context) {
         View toastView = context.getLayoutInflater().inflate(R.layout.toast_custom,
@@ -31,7 +32,7 @@ public class MyUtils  {
         // Set custom view in toast.
         toast.setView(toastView);
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0,0);
+        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
@@ -81,8 +82,31 @@ public class MyUtils  {
      * installs the app on their device.
      *
      * */
-    public static boolean isPermissionGranted(Context context) {
+    public static boolean isUseFingerprintPermissionGranted(Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) ==
                 PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean isReadExternalStoragePermissionGranted(Context context) {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static void requestExternalStoragePermission(Context context) {
+        ActivityCompat.requestPermissions((Activity)context,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1001);
+    }
+
+    public static void checkAndRequestExternalStoragePermission(Context context) {
+        if (isSdkVersionSupportedFingerprint()) {
+            if (!isReadExternalStoragePermissionGranted(context)) {
+                requestExternalStoragePermission(context);
+            }
+        }
+    }
+
+
+    public static int drawableIDFromString(Context context,String drawableName) {
+        return context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
     }
 }

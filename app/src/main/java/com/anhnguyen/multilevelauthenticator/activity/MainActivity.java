@@ -2,13 +2,21 @@ package com.anhnguyen.multilevelauthenticator.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +28,11 @@ import com.anhnguyen.multilevelauthenticator.utils.HashMethods;
 import com.anhnguyen.multilevelauthenticator.utils.MyDatabaseHelper;
 import com.anhnguyen.multilevelauthenticator.utils.MyUtils;
 import com.facebook.stetho.Stetho;
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     Button btnTestFingerprint;
     @BindView(R.id.btnChangeFingerprint)
     Button btnChangeFingerprint;
+    @BindView(R.id.btnTestPicture)
+    Button btnTestPicture;
+    @BindView(R.id.btnChangePicture)
+    Button btnChangePicture;
 
     private MyDatabaseHelper db = null;
     private int flagSuccess = 0;
@@ -57,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         db = new MyDatabaseHelper(getApplicationContext());
-
 
     }
 
@@ -346,6 +362,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1001:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            // other 'case' lines to check for other permissions this app might request
+
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
 
     @OnClick(R.id.btnTestTextPass)
     public void onBtnTestTextPassClicked() {
@@ -401,7 +442,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btnTestFingerprint)
     public void onBtnTestFingerprintClicked() {
         Intent intent = new Intent(MainActivity.this, FingerprintActivity.class);
-//        intent.putExtra("action", "test");
         startActivity(intent);
     }
 
@@ -410,4 +450,20 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(new Intent(Settings.ACTION_SECURITY_SETTINGS), 0);
         Toasty.info(getApplicationContext(), "Change fingerprint setting in phone setting", Toast.LENGTH_LONG, true).show();
     }
+
+    @OnClick(R.id.btnTestPicture)
+    public void onBtnTestPictureClicked() {
+        Intent intent = new Intent(this, PictureActivity.class);
+        intent.putExtra("picture", "test");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btnChangePicture)
+    public void onBtnChangePictureClicked() {
+        Intent intent = new Intent(this, PictureActivity.class);
+        intent.putExtra("picture", "change");
+        startActivity(intent);
+
+    }
+
 }

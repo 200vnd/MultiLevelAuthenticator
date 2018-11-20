@@ -6,6 +6,7 @@ public class Account implements Serializable {
     private String id;
     private String textPass;
     private String pattern;
+    private int picture;
 
     public Account() {
     }
@@ -32,5 +33,13 @@ public class Account implements Serializable {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public int getPicture() {
+        return picture;
+    }
+
+    public void setPicture(int picture) {
+        this.picture = picture;
     }
 }
