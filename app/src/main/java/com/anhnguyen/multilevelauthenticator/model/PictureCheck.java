@@ -1,6 +1,8 @@
 package com.anhnguyen.multilevelauthenticator.model;
 
-public class PictureCheck {
+import java.io.Serializable;
+
+public class PictureCheck implements Serializable {
     private String pathPicture;
     private boolean isUserUpload;
 

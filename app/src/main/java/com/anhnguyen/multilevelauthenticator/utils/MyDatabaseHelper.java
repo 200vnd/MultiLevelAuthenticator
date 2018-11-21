@@ -330,7 +330,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<String> pathsUserPicture(String idUser) {
         ArrayList<String> arr = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            String path = imageDir_Path() + "//" + idUser + "_" + i + ".jpg";
+            String path = imageDir_Path() + "/" + idUser + "_" + i + ".jpg";
             arr.add(path);
         }
         return arr;

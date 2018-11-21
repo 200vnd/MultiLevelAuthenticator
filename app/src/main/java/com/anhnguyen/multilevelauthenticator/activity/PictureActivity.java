@@ -21,12 +21,14 @@ import com.anhnguyen.multilevelauthenticator.R;
 import com.anhnguyen.multilevelauthenticator.model.Account;
 import com.anhnguyen.multilevelauthenticator.model.PictureCheck;
 import com.anhnguyen.multilevelauthenticator.utils.MyDatabaseHelper;
+import com.anhnguyen.multilevelauthenticator.utils.MyUtils;
 import com.bumptech.glide.Glide;
 import com.jaiselrahman.filepicker.activity.FilePickerActivity;
 import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
@@ -36,9 +38,6 @@ public class PictureActivity extends AppCompatActivity {
     private EditText txtIDTestPicture;
     private Button btnCheckIDTestPicture;
     private TextView txtPictureTestNotification;
-    private ImageView imgTestPictureChoice;
-    private Button btnYesTestPicture, btnNoTestPicture;
-    private LinearLayout layoutAskTestPicture;
 
     private EditText txtIDChangePicture;
     private TextView txtPictureChangeNotification;
@@ -63,12 +62,29 @@ public class PictureActivity extends AppCompatActivity {
             setContentView(R.layout.activity_picture_test);
             addControlsTest();
             addEventsTest();
-        } else {
+        } else if (i.equals("change")) {
             setContentView(R.layout.activity_picture_change);
             addControlsChange();
             addEventsChange();
+        } else if (i.equals("success")) {
+            setContentView(R.layout.activity_picture_test);
+            addControlsTest();
+            addEventsTest();
+            txtPictureTestNotification.setVisibility(View.VISIBLE);
+            txtPictureTestNotification.setText("Success");
+            txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternCorrect));
+        } else if (i.equals("failed")) {
+            setContentView(R.layout.activity_picture_test);
+            addControlsTest();
+            addEventsTest();
+            txtPictureTestNotification.setVisibility(View.VISIBLE);
+            txtPictureTestNotification.setText("Failed");
+            txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
+        } else {
+            finish();
         }
     }
+
 
     private void addControlsChange() {
         txtIDChangePicture = findViewById(R.id.txtIDChangePicture);
@@ -81,10 +97,6 @@ public class PictureActivity extends AppCompatActivity {
         txtIDTestPicture = findViewById(R.id.txtIDTestPicture);
         btnCheckIDTestPicture = findViewById(R.id.btnCheckIDTestPicture);
         txtPictureTestNotification = findViewById(R.id.txtPictureTestNotification);
-        imgTestPictureChoice = findViewById(R.id.imgTestPictureChoice);
-        btnYesTestPicture = findViewById(R.id.btnYesTestPicture);
-        btnNoTestPicture = findViewById(R.id.btnNoTestPicture);
-        layoutAskTestPicture = findViewById(R.id.layoutAskTestPicture);
     }
 
     private void addEventsChange() {
@@ -180,35 +192,30 @@ public class PictureActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String idTest = txtIDTestPicture.getText().toString();
                 if (db.checkID(idTest) && db.getPassword(idTest, MyDatabaseHelper.TYPE_PICTURE).equals("1")) {
-                    handleTestPicture();
-                    Log.d(TAG, db.pathsUserPicture(idTest).toString());
-                    Glide.with(getApplicationContext()).load(db.pathsUserPicture(idTest).get(0)).into(imgTestPictureChoice);
-
                     txtPictureTestNotification.setVisibility(View.VISIBLE);
-                    txtPictureTestNotification.setText("User found, choose all the pictures belonging to you from below");
-                    imgTestPictureChoice.setVisibility(View.VISIBLE);
-//                    String s = "picture2";
-//                    Glide.with(getApplicationContext()).load(MyUtils.drawableIDFromString(getApplicationContext(),s)).into(imgTestPictureChoice);
-                    layoutAskTestPicture.setVisibility(View.VISIBLE);
+                    txtPictureTestNotification.setText("User found, choose all the pictures belonging to you");
+                    txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
+//                    imgTestPictureChoice.setVisibility(View.VISIBLE);
+//                    layoutAskTestPicture.setVisibility(View.VISIBLE);
+
+                    handleTestPicture(idTest);
+
                 } else if (db.checkID(idTest) && !db.getPassword(idTest, MyDatabaseHelper.TYPE_PICTURE).equals("1")) {
                     txtPictureTestNotification.setVisibility(View.VISIBLE);
                     txtPictureTestNotification.setText("User found but this type of password is not set, return to main page and use Change button");
-                    imgTestPictureChoice.setVisibility(View.INVISIBLE);
-                    layoutAskTestPicture.setVisibility(View.INVISIBLE);
+                    txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
                 } else {
                     txtPictureTestNotification.setVisibility(View.VISIBLE);
                     txtPictureTestNotification.setText("User not found, return to main page and use Change button to add new user");
-                    imgTestPictureChoice.setVisibility(View.INVISIBLE);
-                    layoutAskTestPicture.setVisibility(View.INVISIBLE);
+                    txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
                 }
             }
-
-
         });
     }
 
-    private void handleTestPicture() {
-        PictureCheck pictureCheck = new PictureCheck();
+    private void handleTestPicture(String id) {
+
+        final ArrayList<PictureCheck> pictureCheckArrayList = new ArrayList<>();
         Random random = new Random();
         int sum = 5;
         int numUser = random.nextInt(3) + 1;
@@ -216,6 +223,7 @@ public class PictureActivity extends AppCompatActivity {
         Log.d(TAG, "numUser = " + numUser);
         Log.d(TAG, "numDefault = " + numDefault);
 
+        // add picture from drawable (default pictures)
         ArrayList<Integer> temp = new ArrayList<>();
         int count = 0;
         while (count < numDefault) {
@@ -224,11 +232,45 @@ public class PictureActivity extends AppCompatActivity {
                 continue;
             }
             temp.add(numDefaultRand);
-            String defaultPicID = "R.id.picture" + numDefaultRand;
+            String defaultPicID = "picture" + numDefaultRand;
+            PictureCheck pictureCheck = new PictureCheck();
+            pictureCheck.setPathPicture(defaultPicID);
+            pictureCheck.setUserUpload(false);
+            pictureCheckArrayList.add(pictureCheck);
             Log.d(TAG, "defaultPicID: " + defaultPicID);
             count++;
         }
 
+        // add pictures from imageDir (user pictures)
+        temp.clear();
+        count = 0;
+        while (count < numUser) {
+            int numUserRand = random.nextInt(3);
+            if (temp.contains(numUserRand)) {
+                continue;
+            }
+            temp.add(numUserRand);
+            String userPicID = db.pathsUserPicture(id).get(numUserRand);
+            PictureCheck pictureCheck = new PictureCheck();
+            pictureCheck.setPathPicture(userPicID);
+            pictureCheck.setUserUpload(true);
+            pictureCheckArrayList.add(pictureCheck);
+            Log.d(TAG, "userPicID: " + userPicID);
+            count++;
+        }
+
+        Collections.shuffle(pictureCheckArrayList);
+
+//        Log.d(TAG, "pictureCheckArrayList.size: " + pictureCheckArrayList.size());
+//        Log.d(TAG,"pictureCheckArrayList1: "+ pictureCheckArrayList.get(1).getPathPicture());
+//        Log.d(TAG,"pictureCheckArrayList2: "+ pictureCheckArrayList.get(2).getPathPicture());
+//        Log.d(TAG,"pictureCheckArrayList3: "+ pictureCheckArrayList.get(3).getPathPicture());
+//        Log.d(TAG,"pictureCheckArrayList4: "+ pictureCheckArrayList.get(4).getPathPicture());
+//        Log.d(TAG,"pictureCheckArrayList0: "+ pictureCheckArrayList.get(0).getPathPicture());
+
+        Intent intent = new Intent(getApplicationContext(), PictureListActivity.class);
+        intent.putExtra("listpicture", pictureCheckArrayList);
+        startActivity(intent);
 
     }
 
@@ -242,10 +284,6 @@ public class PictureActivity extends AppCompatActivity {
                     if (files.size() == 0) {
                         break;
                     }
-//                    Bitmap bmp = BitmapFactory.decodeFile(files.get(0).getPath());
-//                    db.saveToInternalStorage(bmp, "id1_1.jpg");
-//                    Log.d(TAG, db.imageDir_Path());
-//                    Toast.makeText(getApplicationContext(), files.get(0).getName(), Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:

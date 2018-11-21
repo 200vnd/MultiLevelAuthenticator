@@ -24,7 +24,8 @@
         </activity>
         <activity android:name=".activity.PatternActivity" />
         <activity android:name=".activity.FingerprintActivity" />
-        <activity android:name=".activity.PictureActivity"></activity>
+        <activity android:name=".activity.PictureActivity" />
+        <activity android:name=".activity.PictureListActivity"></activity>
     </application>
 
 </manifest>
