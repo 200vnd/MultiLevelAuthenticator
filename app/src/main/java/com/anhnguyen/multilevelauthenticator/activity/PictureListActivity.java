@@ -42,14 +42,14 @@ public class PictureListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (finaluserPictureCount == adapter.getUserPickCount() && finaluserPictureCount == adapter.getCorrectCount()) {
 //                    Toast.makeText(getApplicationContext(), " true", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),PictureActivity.class);
-                    intent.putExtra("picture", "success");
-                    startActivity(intent);
+                    Intent returnIntent  = new Intent(getApplicationContext(),PictureActivity.class);
+                    returnIntent .putExtra("result_pl", "success");
+                    setResult(RESULT_OK,returnIntent);
                 } else {
 //                    Toast.makeText(getApplicationContext(), " false", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(),PictureActivity.class);
-                    intent.putExtra("picture", "failed");
-                    startActivity(intent);
+                    Intent returnIntent  = new Intent(getApplicationContext(),PictureActivity.class);
+                    returnIntent .putExtra("result_pl", "failed");
+                    setResult(RESULT_OK,returnIntent);
                 }
                 finish();
             }

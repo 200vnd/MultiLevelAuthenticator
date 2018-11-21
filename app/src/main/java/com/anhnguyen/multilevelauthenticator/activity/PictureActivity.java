@@ -62,26 +62,10 @@ public class PictureActivity extends AppCompatActivity {
             setContentView(R.layout.activity_picture_test);
             addControlsTest();
             addEventsTest();
-        } else if (i.equals("change")) {
+        } else {
             setContentView(R.layout.activity_picture_change);
             addControlsChange();
             addEventsChange();
-        } else if (i.equals("success")) {
-            setContentView(R.layout.activity_picture_test);
-            addControlsTest();
-            addEventsTest();
-            txtPictureTestNotification.setVisibility(View.VISIBLE);
-            txtPictureTestNotification.setText("Success");
-            txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternCorrect));
-        } else if (i.equals("failed")) {
-            setContentView(R.layout.activity_picture_test);
-            addControlsTest();
-            addEventsTest();
-            txtPictureTestNotification.setVisibility(View.VISIBLE);
-            txtPictureTestNotification.setText("Failed");
-            txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
-        } else {
-            finish();
         }
     }
 
@@ -270,7 +254,7 @@ public class PictureActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), PictureListActivity.class);
         intent.putExtra("listpicture", pictureCheckArrayList);
-        startActivity(intent);
+        startActivityForResult(intent,9001);
 
     }
 
@@ -286,6 +270,27 @@ public class PictureActivity extends AppCompatActivity {
                     }
                 }
                 break;
+
+            case 9001:
+                if (resultCode == RESULT_OK) {
+                    String result = data.getStringExtra("result_pl");
+                    //your code
+                    if (result.equals("success")) {
+                        txtPictureTestNotification.setVisibility(View.VISIBLE);
+                        txtPictureTestNotification.setText("Success");
+                        txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternCorrect));
+                    } else if (result.equals("failed")) {
+                        txtPictureTestNotification.setVisibility(View.VISIBLE);
+                        txtPictureTestNotification.setText("Failed");
+                        txtPictureTestNotification.setTextColor(getResources().getColor(R.color.patternWrong));
+                    }
+
+                }
+                if (resultCode == RESULT_CANCELED) {
+                    // Write your code if there's no result
+                }
+                break;
+
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
