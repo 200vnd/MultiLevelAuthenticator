@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/customBackgroundColor"
-    android:padding="10dp"
+    android:padding="5dp"
     tools:context=".activity.MainActivity">
 
     <android.support.constraint.Guideline
@@ -73,7 +73,7 @@
         android:text="@string/test"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnTestBehavior"
+        app:layout_constraintBottom_toTopOf="@+id/btnTestFace"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
         app:layout_constraintRight_toLeftOf="@id/btnChangePattern"
@@ -92,19 +92,19 @@
         app:layout_constraintTop_toTopOf="@id/btnTestPattern" />
 
     <TextView
-        android:id="@+id/txtBehavior"
+        android:id="@+id/txtFace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/behavior"
+        android:text="@string/face"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/btnTestBehavior"
+        app:layout_constraintBottom_toBottomOf="@id/btnTestFace"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnTestBehavior" />
+        app:layout_constraintTop_toTopOf="@id/btnTestFace" />
 
     <Button
-        android:id="@+id/btnTestBehavior"
+        android:id="@+id/btnTestFace"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,20 +114,20 @@
         app:layout_constraintBottom_toTopOf="@+id/btnTestFingerprint"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
-        app:layout_constraintRight_toLeftOf="@id/btnChangeBehavior"
+        app:layout_constraintRight_toLeftOf="@id/btnChangeFace"
         app:layout_constraintTop_toBottomOf="@+id/btnTestPattern" />
 
     <Button
-        android:id="@+id/btnChangeBehavior"
+        android:id="@+id/btnChangeFace"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/change"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintLeft_toRightOf="@id/btnTestBehavior"
+        app:layout_constraintLeft_toRightOf="@id/btnTestFace"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnTestBehavior" />
+        app:layout_constraintTop_toTopOf="@id/btnTestFace" />
 
     <TextView
         android:id="@+id/txtFingerprint"
@@ -153,7 +153,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
         app:layout_constraintRight_toLeftOf="@id/btnChangeFingerprint"
-        app:layout_constraintTop_toBottomOf="@+id/btnTestBehavior" />
+        app:layout_constraintTop_toBottomOf="@+id/btnTestFace" />
 
     <Button
         android:id="@+id/btnChangeFingerprint"
@@ -187,7 +187,7 @@
         android:text="@string/test"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnTestVoice"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
         app:layout_constraintRight_toLeftOf="@id/btnChangePicture"
@@ -205,5 +205,79 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/btnTestPicture" />
 
+    <TextView
+        android:id="@+id/txtVoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Voice"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/btnTestVoice"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnTestVoice" />
 
+    <Button
+        android:id="@+id/btnTestVoice"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/test"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnTestVideo"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
+        app:layout_constraintRight_toLeftOf="@id/btnChangeVoice"
+        app:layout_constraintTop_toBottomOf="@+id/btnTestPicture" />
+
+    <Button
+        android:id="@+id/btnChangeVoice"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/btnTestVoice"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnTestVoice" />
+
+    <TextView
+        android:id="@+id/txtVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Video (Voice + Face)"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/btnTestVideo"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnTestVideo" />
+
+    <Button
+        android:id="@+id/btnTestVideo"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/test"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@id/guideline_vertical"
+        app:layout_constraintRight_toLeftOf="@id/btnChangeVideo"
+        app:layout_constraintTop_toBottomOf="@+id/btnTestVoice" />
+
+    <Button
+        android:id="@+id/btnChangeVideo"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/btnTestVideo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnTestVideo" />
 </android.support.constraint.ConstraintLayout>

@@ -175,11 +175,11 @@ public class PatternActivity extends Activity {
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-        } else if (db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN).equals(password) && db.checkID(id)) {
+        } else if (db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN)!=null && db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN).equals(password) && db.checkID(id)) {
             txtPatternNotify.setVisibility(View.INVISIBLE);
             Toasty.success(getApplicationContext(), "Success!", Toast.LENGTH_LONG, true).show();
             finish();
-        } else if (!db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN).equals(password) && db.checkID(id)) {
+        } else if (db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN)!=null && !db.getPassword(id, MyDatabaseHelper.TYPE_PATTERN).equals(password) && db.checkID(id)) {
 //            Toasty.error(getApplicationContext(), "Authentication failed! Wrong password!", Toast.LENGTH_LONG, true).show();
             txtPatternNotify.setVisibility(View.VISIBLE);
             txtPatternNotify.setText("Wrong password");
@@ -193,7 +193,7 @@ public class PatternActivity extends Activity {
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    changePattern();
+                    newPattern();
                 }
             });
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -408,7 +408,7 @@ public class PatternActivity extends Activity {
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
                 password1 = HashMethods.md5(PatternLockUtils.patternToString(patternLockView1, pattern));
-                Log.d(TAG, "new_p1: " + password1);
+//                Log.d(TAG, "new_p1: " + password1);
                 txtPatternNotify.setText("Confirm your pattern");
                 txtPatternNotify.setVisibility(View.VISIBLE);
 
@@ -420,7 +420,7 @@ public class PatternActivity extends Activity {
 
             @Override
             public void onCleared() {
-                Log.d(TAG, "new_p1 clear");
+//                Log.d(TAG, "new_p1 clear");
 //                patternLockView1.setVisibility(View.GONE);
 //                patternLockView2.setVisibility(View.VISIBLE);
             }
@@ -439,8 +439,8 @@ public class PatternActivity extends Activity {
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
                 password2 = HashMethods.md5(PatternLockUtils.patternToString(patternLockView2, pattern));
-                Log.d(TAG, "new_p2: " + password2);
-                Log.d(TAG, "new p1 cmp p2: " + password1.equals(password2));
+//                Log.d(TAG, "new_p2: " + password2);
+//                Log.d(TAG, "new p1 cmp p2: " + password1.equals(password2));
 //                patternLockView2.clearPattern();
                 if (!db.checkID(txtIDPatternInput.getText().toString()) && password1.equals(password2)) {
                     Account account = new Account();
@@ -466,7 +466,7 @@ public class PatternActivity extends Activity {
 
             @Override
             public void onCleared() {
-                Log.d(TAG, "new_p2 clear");
+//                Log.d(TAG, "new_p2 clear");
 //                patternLockView2.setVisibility(View.GONE);
 //                patternLockView1.setVisibility(View.VISIBLE);
             }

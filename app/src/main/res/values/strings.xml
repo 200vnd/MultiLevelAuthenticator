@@ -9,4 +9,15 @@
     <string name="cancel">Cancel</string>
     <string name="password">Password</string>
     <string name="fingerprint">Fingerprint</string>
+    <string name="face">Face</string>
+
+    <string name="subscription_key">97c493f9b5a04d1087e2f8b5a038f246</string>
+    <string name="endpoint">https://westcentralus.api.cognitive.microsoft.com/face/v1.0</string>
+
+    <string name="apiKey">key_9f2b2d8fa97b43f0a30964dbddda1406</string>
+    <string name="apiToken">tok_b48ca90ba97e4e73ae33e52859560740</string>
+
+
+
+
 </resources>

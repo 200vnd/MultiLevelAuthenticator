@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,9 @@ import com.anhnguyen.multilevelauthenticator.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 
-public class MyUtils {
+
+public class Utils {
+
 
     public static void ToastCustomSuccess(Activity context) {
         View toastView = context.getLayoutInflater().inflate(R.layout.toast_custom,
@@ -92,7 +96,7 @@ public class MyUtils {
     }
 
     public static void requestExternalStoragePermission(Context context) {
-        ActivityCompat.requestPermissions((Activity)context,
+        ActivityCompat.requestPermissions((Activity) context,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 1001);
     }
@@ -105,8 +109,19 @@ public class MyUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static void checkAndRequestCameraPermission(Context context) {
+        if (context.checkSelfPermission(Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) context,new String[]{Manifest.permission.CAMERA},
+                    1002);
+        }
+    }
 
-    public static int drawableIDFromString(Context context,String drawableName) {
+    public static int drawableIDFromString(Context context, String drawableName) {
         return context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
     }
+
+
+
 }

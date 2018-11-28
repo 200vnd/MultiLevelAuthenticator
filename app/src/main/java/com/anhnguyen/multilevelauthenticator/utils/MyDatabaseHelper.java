@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.anhnguyen.multilevelauthenticator.model.Account;
-import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -309,10 +308,31 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        return directory.getAbsolutePath();
     }
 
-    public boolean saveMultiFileToInternalStorage(ArrayList<MediaFile> listImage, String idUser) {
+    public boolean saveToInternalStorageNotScale(Bitmap bitmapImage, String idUser) {
+        String imageName =  idUser + "_face_0.jpg";
+        File mypath = new File(imageDir_Path(), imageName);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new File(imageDir_Path() + "/" + imageName).exists();
+    }
+
+    public boolean saveMultiFileToInternalStorage(ArrayList<InputStream> listImage, String idUser) {
         int countSuccess =0;
         for (int i = 0; i < listImage.size(); i++) {
-            Bitmap bmp = BitmapFactory.decodeFile(listImage.get(i).getPath());
+            Bitmap bmp = BitmapFactory.decodeStream(listImage.get(i));
             String fileName = idUser + "_" + i + ".jpg";
             saveToInternalStorage(bmp, fileName);
             if (new File(imageDir_Path() + "//" + fileName).exists()) {

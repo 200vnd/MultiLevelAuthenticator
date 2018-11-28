@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.anhnguyen.multilevelauthenticator.R;
 import com.anhnguyen.multilevelauthenticator.model.PictureCheck;
-import com.anhnguyen.multilevelauthenticator.utils.MyUtils;
+import com.anhnguyen.multilevelauthenticator.utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class PictureListAdapter extends ArrayAdapter<PictureCheck> {
         if (pictureCheck.isUserUpload()) {
             Glide.with(this.context).load(pictureCheck.getPathPicture()).into(imgItemPictureList);
         } else {
-            Glide.with(this.context).load(MyUtils.drawableIDFromString(this.context,pictureCheck.getPathPicture())).into(imgItemPictureList);
+            Glide.with(this.context).load(Utils.drawableIDFromString(this.context,pictureCheck.getPathPicture())).into(imgItemPictureList);
         }
 
 

@@ -2,21 +2,17 @@ package com.anhnguyen.multilevelauthenticator.activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,20 +22,30 @@ import com.anhnguyen.multilevelauthenticator.R;
 import com.anhnguyen.multilevelauthenticator.model.Account;
 import com.anhnguyen.multilevelauthenticator.utils.HashMethods;
 import com.anhnguyen.multilevelauthenticator.utils.MyDatabaseHelper;
-import com.anhnguyen.multilevelauthenticator.utils.MyUtils;
+import com.anhnguyen.multilevelauthenticator.utils.Utils;
 import com.facebook.stetho.Stetho;
-import com.jaiselrahman.filepicker.activity.FilePickerActivity;
-import com.jaiselrahman.filepicker.config.Configurations;
-import com.jaiselrahman.filepicker.model.MediaFile;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.voiceit.voiceit2.VoiceItAPI2;
 
-import java.util.ArrayList;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cz.msebera.android.httpclient.Header;
 import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity {
+
+    @BindView(R.id.btnTestVideo)
+    Button btnTestVideo;
+    @BindView(R.id.btnChangeVideo)
+    Button btnChangeVideo;
+    private VoiceItAPI2 myVoiceIt;
+    private String userId = "usr_d6ef2826ccdb41f08d8ff60c7516dadf";
+    //    private String phrase = "Never forget tomorrow is a new day";
+    private String phrase = "Today is a nice day to go for a walk";
+    private String contentLanguage = "en-US";
 
     @BindView(R.id.btnTestTextPass)
     Button btnTestTextPass;
@@ -49,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
     Button btnTestPattern;
     @BindView(R.id.btnChangePattern)
     Button btnChangePattern;
-    @BindView(R.id.btnTestBehavior)
-    Button btnTestBehavior;
-    @BindView(R.id.btnChangeBehavior)
-    Button btnChangeBehavior;
+    @BindView(R.id.btnTestFace)
+    Button btnTestFace;
+    @BindView(R.id.btnChangeFace)
+    Button btnChangeFace;
     @BindView(R.id.btnTestFingerprint)
     Button btnTestFingerprint;
     @BindView(R.id.btnChangeFingerprint)
@@ -61,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
     Button btnTestPicture;
     @BindView(R.id.btnChangePicture)
     Button btnChangePicture;
+    @BindView(R.id.btnTestVoice)
+    Button btnTestVoice;
+    @BindView(R.id.btnChangeVoice)
+    Button btnChangeVoice;
 
     private MyDatabaseHelper db = null;
     private int flagSuccess = 0;
@@ -74,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         db = new MyDatabaseHelper(getApplicationContext());
+        myVoiceIt = new VoiceItAPI2(getString(R.string.apiKey), getString(R.string.apiToken));
 
     }
 
@@ -104,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
         // user exists password exists
         else if (db.checkPasswordExistUser(id, type)) {
             if (password.equals(db.getPassword(id, type))) {
-//                Toast.makeText(getApplicationContext(), "Authenticate successfully!", Toast.LENGTH_LONG).show();
-                MyUtils.ToastCustomSuccess(MainActivity.this);
+                Utils.ToastCustomSuccess(MainActivity.this);
                 flagSuccess = 1;
             } else {
-//                Toast.makeText(getApplicationContext(), "Authentication failed! Wrong Password!", Toast.LENGTH_LONG).show();
                 Toasty.error(getApplicationContext(), "Authentication failed! Wrong password!", Toast.LENGTH_LONG, true).show();
                 flagSuccess = 0;
             }
@@ -380,12 +389,19 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             // other 'case' lines to check for other permissions this app might request
+//            case 1002:
+//                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+//                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    startActivityForResult(cameraIntent, 10021);
+//                } else {
+//                    Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+//                }
 
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
 
     @OnClick(R.id.btnTestTextPass)
@@ -430,12 +446,41 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    @OnClick(R.id.btnTestBehavior)
-    public void onBtnTestBehaviorClicked() {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @OnClick(R.id.btnTestFace)
+    public void onBtnTestFaceClicked() {
+        myVoiceIt.encapsulatedFaceVerification(this, userId, false, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedFaceVerification Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedFaceVerification Result : " + errorResponse.toString());
+                }
+            }
+        });
     }
 
-    @OnClick(R.id.btnChangeBehavior)
-    public void onBtnChangeBehaviorClicked() {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @OnClick(R.id.btnChangeFace)
+    public void onBtnChangeFaceClicked() {
+
+        myVoiceIt.encapsulatedFaceEnrollment(this, userId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedFaceEnrollment Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedFaceEnrollment Result : " + errorResponse.toString());
+                }
+            }
+        });
     }
 
 
@@ -466,4 +511,71 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.btnTestVoice)
+    public void onBtnTestVoiceClicked() {
+        myVoiceIt.encapsulatedVoiceVerification(this, userId, contentLanguage, phrase, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedVoiceVerification Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedVoiceVerification Result : " + errorResponse.toString());
+                }
+            }
+        });
+    }
+
+    @OnClick(R.id.btnChangeVoice)
+    public void onBtnChangeVoiceClicked() {
+        myVoiceIt.encapsulatedVoiceEnrollment(this, userId, contentLanguage, phrase, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedVoiceEnrollment Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedVoiceEnrollment Result : " + errorResponse.toString());
+                }
+            }
+        });
+    }
+
+    @OnClick(R.id.btnTestVideo)
+    public void onBtnTestVideoClicked() {
+        myVoiceIt.encapsulatedVideoVerification(this, userId, contentLanguage, phrase, false, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedVideoVerification Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedVideoVerification Result : " + errorResponse.toString());
+                }
+            }
+        });
+    }
+
+    @OnClick(R.id.btnChangeVideo)
+    public void onBtnChangeVideoClicked() {
+        myVoiceIt.encapsulatedVideoEnrollment(this, userId, contentLanguage, phrase, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("encapsulatedVideoEnrollment Result : " + response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                if (errorResponse != null) {
+                    System.out.println("encapsulatedVideoEnrollment Result : " + errorResponse.toString());
+                }
+            }
+        });
+    }
 }

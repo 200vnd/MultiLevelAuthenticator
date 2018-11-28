@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.anhnguyen.multilevelauthenticator.R;
 import com.anhnguyen.multilevelauthenticator.utils.FingerprintHandler;
-import com.anhnguyen.multilevelauthenticator.utils.MyUtils;
+import com.anhnguyen.multilevelauthenticator.utils.Utils;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -54,7 +54,7 @@ public class FingerprintActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fingerprint);
         ButterKnife.bind(this);
 
-        if (MyUtils.isSdkVersionSupportedFingerprint() && MyUtils.isHardwareSupportedFingerprint(getApplicationContext())) {
+        if (Utils.isSdkVersionSupportedFingerprint() && Utils.isHardwareSupportedFingerprint(getApplicationContext())) {
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
 //            Toast.makeText(getApplicationContext(), "good phone", Toast.LENGTH_SHORT).show();
@@ -79,10 +79,10 @@ public class FingerprintActivity extends AppCompatActivity {
                     }
                 }
             }
-        } else if (!MyUtils.isSdkVersionSupportedFingerprint()) {
+        } else if (!Utils.isSdkVersionSupportedFingerprint()) {
             Toasty.warning(getApplicationContext(), "Your Android version does not support fingerprint", Toast.LENGTH_SHORT, true).show();
             finish();
-        } else if (!MyUtils.isHardwareSupportedFingerprint(getApplicationContext())) {
+        } else if (!Utils.isHardwareSupportedFingerprint(getApplicationContext())) {
             Toasty.warning(getApplicationContext(), "Your Phone does not support fingerprint", Toast.LENGTH_SHORT, true).show();
             finish();
         } else {
